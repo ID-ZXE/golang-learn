@@ -6,8 +6,11 @@ import (
 	"unicode"
 )
 
-// PI 常量
+// PI 显式的定义常量
 const PI float32 = 3.1415
+
+// STR1 隐式类型定义常量
+const STR1 = "str1"
 
 // 常量自动递增
 const (
@@ -16,10 +19,15 @@ const (
 	Male
 )
 
-// int变量
+const (
+	Monday, Tuesday, Wednesday = 1, 2, 3
+	Thursday, Friday, Saturday = 4, 5, 6
+)
+
+// i int变量
 var i int = 100
 
-// 字符串变量
+// str 字符串变量
 var str string = "hello world"
 
 var (
@@ -28,12 +36,17 @@ var (
 	GOROOT = os.Getenv("GOROOT")
 )
 
-// 在main函数之前执行
+/**
+在每个包初始化之后执行，不能被人为调用
+*/
 func init() {
 	println()
 	println("home", HOME, "user", USER, "go root", GOROOT)
 }
 
+/**
+程序入口
+*/
 func main() {
 	println(str)
 	method1()
