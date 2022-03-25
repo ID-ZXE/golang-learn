@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"log"
+)
 
 func init() {
 	println()
@@ -28,6 +32,13 @@ func main() {
 		return x + y
 	}
 	println(f(1, 2))
+
+	res, err := errorProcess(11)
+	if err == nil {
+		println("res", res)
+	} else {
+		log.Println(err)
+	}
 }
 
 // Multiply 修改外部值
@@ -45,6 +56,14 @@ func MinMax(a int, b int) (min int, max int) {
 		max = a
 	}
 	return
+}
+
+func errorProcess(a int) (r int, err error) {
+	if a > 10 {
+		err = errors.New("this is error message")
+		return
+	}
+	return a, nil
 }
 
 // multiArg 可变长参数
