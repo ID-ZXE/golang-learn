@@ -52,6 +52,7 @@ func main() {
 	method1()
 	char()
 	strAppend()
+	arrTest()
 }
 
 func method1() {
@@ -96,6 +97,12 @@ func cast() {
 
 // 字符串拼接
 func strAppend() {
-	str := "s" + "t" + "r"
-	println(str)
+	println("s" + "t" + "r")
+}
+
+// 数组
+func arrTest() {
+	var arr [16]int
+	arr[15] = 100
+	println(arr[0], arr[15])
 }

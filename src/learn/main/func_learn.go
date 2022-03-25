@@ -22,6 +22,12 @@ func main() {
 	deferFunctionA()
 
 	multiArg("a", "b", "c")
+
+	// 匿名函数
+	f := func(x, y int) int {
+		return x + y
+	}
+	println(f(1, 2))
 }
 
 // Multiply 修改外部值

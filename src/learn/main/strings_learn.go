@@ -1,16 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
+func init() {
+	println()
+}
+
 func main() {
-	var str string = "This is an example of functionB functionB string"
-	println()
-	fmt.Printf("T/F? Does the string \"%s\" have prefix %s? ", str, "Th")
-	fmt.Printf("%t\n", strings.HasPrefix(str, "Th"))
-	println()
+	var str string = "This is an example of string"
+	println("HasPrefix", strings.HasPrefix(str, "Th"))
+	println("str[0]", str[0])
+	println("len", len(str))
 
 	println("isContain:", strings.Contains(str, "example"))
 	println("index:", strings.Index(str, "example"))
@@ -21,7 +23,7 @@ func main() {
 	println("repeat s result:", strings.Repeat("s", 3))
 	// -1表示替换所有 不改变原有字符串
 	println("replace result:", strings.Replace(str, "This", "this", -1))
-	println("functionB count:", strings.Count(str, "functionB"))
+	println("example count:", strings.Count(str, "example"))
 	println("lower", strings.ToLower("ABC"), "upper", strings.ToUpper("abc"))
 
 	println("****修剪字符串****")
