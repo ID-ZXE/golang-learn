@@ -6,6 +6,7 @@ func main() {
 	var i1 int = 5
 	fmt.Printf("An integer: %d, it’s location in memory: %p\n", i1, &i1)
 
+	// 取地址符号
 	var intP *int = &i1
 	println("address", intP)
 
