@@ -16,8 +16,8 @@ type Context struct {
 	Method     string
 	Params     map[string]string
 	StatusCode int
-	handlers   []HandlerFunc
-	index      int
+	handlers   []HandlerFunc // 执行链条
+	index      int           // 执行链条当前执行的索引位置
 }
 
 func newContext(responseWriter http.ResponseWriter, request *http.Request) *Context {

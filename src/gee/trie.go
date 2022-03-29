@@ -3,10 +3,10 @@ package gee
 import "strings"
 
 type Node struct {
-	pattern  string  // 待匹配路由，例如 /p/:lang
+	pattern  string  // url路径
 	part     string  // 路由中的一部分，例如 :lang
-	children []*Node // 子节点，例如 [doc, tutorial, intro]
-	isWild   bool    // 是否精确匹配，part 含有 : 或 * 时为true
+	children []*Node // 当前节点的子节点
+	isWild   bool    // 是否模糊匹配，part 含有 : 或 * 时为true
 }
 
 // 第一个匹配成功的节点, 用于插入

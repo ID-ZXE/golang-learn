@@ -86,6 +86,7 @@ func (router *Router) handle(context *Context) {
 	if node != nil {
 		key := context.Method + "-" + node.pattern
 		context.Params = params
+		// 将route中获取到handler放入处理链条的最末端
 		context.handlers = append(context.handlers, router.handlers[key])
 	} else {
 		context.handlers = append(context.handlers, func(c *Context) {

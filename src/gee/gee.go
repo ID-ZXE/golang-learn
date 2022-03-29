@@ -10,17 +10,16 @@ type HandlerFunc func(*Context)
 
 type (
 	RouterGroup struct {
-		// string 类型默认值是空串
-		prefix      string
-		middlewares []HandlerFunc
+		prefix      string        // string 类型默认值是空串
+		middlewares []HandlerFunc // 处理链条
 		parent      *RouterGroup
 		engine      *Engine
 	}
 
 	Engine struct {
 		*RouterGroup
-		router *Router
-		groups []*RouterGroup // store all groups
+		router *Router        // 存放了路由关系 以及路由的handler
+		groups []*RouterGroup // 所有group
 	}
 )
 
@@ -74,6 +73,7 @@ func (engine *Engine) Run(addr string) (err error) {
 
 // 实现了ServeHTTP方法就表示是Handler接口
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	// 获取所有的处理器 按规则放入处理链条
 	var middlewares []HandlerFunc
 	for _, group := range engine.groups {
 		if strings.HasPrefix(req.URL.Path, group.prefix) {
