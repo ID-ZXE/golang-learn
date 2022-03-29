@@ -9,7 +9,7 @@ type Node struct {
 	isWild   bool    // 是否精确匹配，part 含有 : 或 * 时为true
 }
 
-// 第一个匹配成功的节点，用于插入
+// 第一个匹配成功的节点, 用于插入
 func (node *Node) matchChild(part string) *Node {
 	for _, child := range node.children {
 		if child.part == part || child.isWild {
@@ -19,7 +19,7 @@ func (node *Node) matchChild(part string) *Node {
 	return nil
 }
 
-// 所有匹配成功的节点，用于查找
+// 所有匹配成功的节点, 用于查找
 func (node *Node) matchChildren(part string) []*Node {
 	nodes := make([]*Node, 0)
 	for _, child := range node.children {
@@ -31,13 +31,13 @@ func (node *Node) matchChildren(part string) []*Node {
 }
 
 func (node *Node) insert(pattern string, parts []string, height int) {
-	// 叶子节点
 	if len(parts) == height {
 		node.pattern = pattern
 		return
 	}
 
 	part := parts[height]
+	// 找到第一个匹配成功的节点进行插入
 	child := node.matchChild(part)
 	if child == nil {
 		child = &Node{part: part, isWild: part[0] == ':' || part[0] == '*'}

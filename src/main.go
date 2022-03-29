@@ -7,18 +7,11 @@ import (
 	"time"
 )
 
-func onlyForV2() gee.HandlerFunc {
-	return func(context *gee.Context) {
-		// Start timer
-		t := time.Now()
-		// if a server error occurred
-		context.Fail(500, "Internal Server Error")
-		// Calculate resolution time
-		log.Printf("[%d] %s in %v for group v2", context.StatusCode, context.Req.RequestURI, time.Since(t))
-	}
+func main() {
+	run()
 }
 
-func main() {
+func run() {
 	engine := gee.Default()
 
 	engine.GET("/index", func(c *gee.Context) {
@@ -36,17 +29,19 @@ func main() {
 			c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
 		})
 
-		v1.GET("/hello", func(c *gee.Context) {
-			// expect /hello?name=geektutu
-			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+		v1.GET("/hello/:name/doc", func(c *gee.Context) {
+			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
+		})
+
+		v1.GET("/api/*/doc", func(c *gee.Context) {
+			c.String(http.StatusOK, "url %s\n", c.Path)
 		})
 	}
 
 	v2 := engine.Group("/v2")
 	v2.Use(onlyForV2())
 	{
-		v2.GET("/hello/:name", func(c *gee.Context) {
-			// expect /hello/geektutu
+		v2.GET("/hello/:name/doc", func(c *gee.Context) {
 			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
 		})
 		v2.POST("/login", func(c *gee.Context) {
@@ -58,4 +53,15 @@ func main() {
 	}
 
 	engine.Run(":9999")
+}
+
+func onlyForV2() gee.HandlerFunc {
+	return func(context *gee.Context) {
+		// Start timer
+		t := time.Now()
+		// if a server error occurred
+		context.Fail(500, "Internal Server Error")
+		// Calculate resolution time
+		log.Printf("[%d] %s in %v for group v2", context.StatusCode, context.Req.RequestURI, time.Since(t))
+	}
 }

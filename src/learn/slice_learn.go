@@ -5,12 +5,13 @@ func init() {
 }
 
 func main() {
-	slice1()
-	slice2()
+	// slice1()
+	// slice2()
+	slice3()
 }
 
 func slice1() {
-	var str string = "hello,galang"
+	var str string = "hello,golang"
 	// 切片到5位置
 	println(str[:5])
 	// 切片从第6个开始, 不包括第6个
@@ -35,4 +36,12 @@ func slice2() {
 	// copy mySlice前三个到mySlice1中
 	copy(mySlice1, mySlice)
 	println("mySlice1", mySlice1[0], mySlice1[1])
+}
+
+func slice3() {
+	var arr = make([]int, 0)
+	arr = append(arr, 1, 2, 3)
+	for _, item := range arr {
+		println(item)
+	}
 }

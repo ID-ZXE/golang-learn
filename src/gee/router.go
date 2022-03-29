@@ -10,9 +10,7 @@ type Router struct {
 	handlers map[string]HandlerFunc
 }
 
-// roots key eg, roots['GET'] roots['POST']
-// handlers key eg, handlers['GET-/p/:lang/doc'], handlers['POST-/p/book']
-
+// 小写的方法名代表访问控制在包内
 func newRouter() *Router {
 	return &Router{
 		roots:    make(map[string]*Node),
@@ -20,7 +18,6 @@ func newRouter() *Router {
 	}
 }
 
-// Only one * is allowed
 func parsePattern(pattern string) []string {
 	vs := strings.Split(pattern, "/")
 
@@ -28,6 +25,8 @@ func parsePattern(pattern string) []string {
 	for _, item := range vs {
 		if item != "" {
 			parts = append(parts, item)
+			// 解析到首字母为*之后 停止解析
+			// 后续的路径都不再需要 直接模糊匹配
 			if item[0] == '*' {
 				break
 			}
@@ -36,6 +35,8 @@ func parsePattern(pattern string) []string {
 	return parts
 }
 
+// GET[/index/:name] name为路径参数
+// GET[/index/*] *表示模糊匹配
 func (router *Router) addRoute(method string, pattern string, handler HandlerFunc) {
 	parts := parsePattern(pattern)
 
@@ -60,11 +61,14 @@ func (router *Router) getRoute(method string, path string) (*Node, map[string]st
 	node := root.search(searchParts, 0)
 
 	if node != nil {
+		// 解析构建的node节点的pattern
 		parts := parsePattern(node.pattern)
 		for index, part := range parts {
+			// 如果是:param模式 则将将参数put到params中
 			if part[0] == ':' {
 				params[part[1:]] = searchParts[index]
 			}
+			// 模糊匹配
 			if part[0] == '*' && len(part) > 1 {
 				params[part[1:]] = strings.Join(searchParts[index:], "/")
 				break
