@@ -14,66 +14,88 @@ type Context struct {
 	Req        *http.Request
 	Path       string
 	Method     string
+	Params     map[string]string
 	StatusCode int
+	handlers   []HandlerFunc
+	index      int
 }
 
-func newContext(w http.ResponseWriter, req *http.Request) *Context {
+func newContext(responseWriter http.ResponseWriter, request *http.Request) *Context {
 	return &Context{
-		Writer: w,
-		Req:    req,
-		Path:   req.URL.Path,
-		Method: req.Method,
+		Writer: responseWriter,
+		Req:    request,
+		Path:   request.URL.Path,
+		Method: request.Method,
+		index:  -1,
 	}
 }
 
-func (c *Context) PostForm(key string) string {
-	return c.Req.FormValue(key)
+func (context *Context) Next() {
+	context.index++
+	s := len(context.handlers)
+	for ; context.index < s; context.index++ {
+		context.handlers[context.index](context)
+	}
 }
 
-func (c *Context) Query(key string) string {
-	return c.Req.URL.Query().Get(key)
+func (context *Context) Param(key string) string {
+	value, _ := context.Params[key]
+	return value
 }
 
-func (c *Context) Status(code int) {
-	c.StatusCode = code
-	c.Writer.WriteHeader(code)
+func (context *Context) PostForm(key string) string {
+	return context.Req.FormValue(key)
 }
 
-func (c *Context) SetHeader(key string, value string) {
-	c.Writer.Header().Set(key, value)
+func (context *Context) Query(key string) string {
+	return context.Req.URL.Query().Get(key)
 }
 
-func (c *Context) String(code int, format string, values ...interface{}) {
-	c.SetHeader("Content-Type", "text/plain")
-	c.Status(code)
-	_, err := c.Writer.Write([]byte(fmt.Sprintf(format, values...)))
+func (context *Context) Status(code int) {
+	context.StatusCode = code
+	context.Writer.WriteHeader(code)
+}
+
+func (context *Context) SetHeader(key string, value string) {
+	context.Writer.Header().Set(key, value)
+}
+
+func (context *Context) String(code int, format string, values ...interface{}) {
+	context.SetHeader("Content-Type", "text/plain")
+	context.Status(code)
+	_, err := context.Writer.Write([]byte(fmt.Sprintf(format, values...)))
 	if err != nil {
 		log.Println("write String error", err)
 	}
 }
 
-func (c *Context) JSON(code int, obj interface{}) {
-	c.SetHeader("Content-Type", "application/json")
-	c.Status(code)
-	encoder := json.NewEncoder(c.Writer)
+func (context *Context) JSON(code int, obj interface{}) {
+	context.SetHeader("Content-Type", "application/json")
+	context.Status(code)
+	encoder := json.NewEncoder(context.Writer)
 	if err := encoder.Encode(obj); err != nil {
-		http.Error(c.Writer, err.Error(), 500)
+		http.Error(context.Writer, err.Error(), 500)
 	}
 }
 
-func (c *Context) Data(code int, data []byte) {
-	c.Status(code)
-	_, err := c.Writer.Write(data)
+func (context *Context) Data(code int, data []byte) {
+	context.Status(code)
+	_, err := context.Writer.Write(data)
 	if err != nil {
 		log.Println("write data error", err)
 	}
 }
 
-func (c *Context) HTML(code int, html string) {
-	c.SetHeader("Content-Type", "text/html")
-	c.Status(code)
-	_, err := c.Writer.Write([]byte(html))
+func (context *Context) HTML(code int, html string) {
+	context.SetHeader("Content-Type", "text/html")
+	context.Status(code)
+	_, err := context.Writer.Write([]byte(html))
 	if err != nil {
 		log.Println("write HTML error", err)
 	}
+}
+
+func (context *Context) Fail(code int, err string) {
+	context.index = len(context.handlers)
+	context.JSON(code, H{"message": err})
 }
