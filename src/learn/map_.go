@@ -9,10 +9,33 @@ type PersonInfo struct {
 }
 
 func main() {
-	mapProcess()
+	operate()
+	// mockKvDB()
 }
 
-func mapProcess() {
+func operate() {
+	// 三种定义方式
+	// ages := map[string]int{}
+	// ages := make(map[string]int)
+	ages := map[string]int{
+		"alice":   31,
+		"charlie": 34,
+	}
+	var name = "alice"
+	fmt.Printf("%s age is %d\n", name, ages[name])
+
+	for _name, _age := range ages {
+		fmt.Printf("_name:%s, _age:%d\n", _name, _age)
+	}
+
+	delete(ages, name)
+	if val, ok := ages[name]; !ok {
+		// delete之后val为0
+		fmt.Printf("after delete. %s age val is %d", name, val)
+	}
+}
+
+func mockKvDB() {
 	var personDB map[string]PersonInfo
 	personDB = make(map[string]PersonInfo)
 
