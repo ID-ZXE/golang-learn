@@ -21,7 +21,7 @@ import (
 // close(ch)
 
 // 一个基于无缓存Channels的发送操作将导致发送者goroutine阻塞，直到另一个goroutine在相同的Channels上执行接收操作，
-// 当发送的值通过Channels成功传输之后，两个goroutine可以 继续执行后面的语句。
+// 当发送的值通过Channels成功传输之后，两个goroutine可以继续执行后面的语句。
 // 反之，如果接收操作先发生，那么接收者goroutine也将阻塞，直到有另一个goroutine在相同的Channels上执行发送操作。
 // ch = make(chan int)    // unbuffered channel
 // ch = make(chan int, 0) // unbuffered channel
@@ -108,8 +108,6 @@ func printer(in <-chan int) {
 
 /****************/
 
-var times int64 = int64(time.Now().Nanosecond())
-
 // 获取最快的响应
 func mirroredQuery() string {
 	// 如果我们使用了无缓存的channel，那么两个慢的goroutines将会因为没有人接收而被永远卡住。
@@ -124,13 +122,14 @@ func mirroredQuery() string {
 }
 
 func request(hostname string) (response string) {
-	sleepRandomTime()
+	sleep()
 	return "result:" + hostname
 }
 
-func sleepRandomTime() {
-	rand.Seed(times)
-	randomTime := int64(rand.Int() % 100)
+func sleep() {
+	rand.Seed(int64(time.Now().Nanosecond()))
+	randomTime := int64(rand.Int() % 20)
+	println("sleep", randomTime, "ms")
 	// nanosecond
-	time.Sleep(time.Duration(randomTime))
+	time.Sleep(time.Duration(randomTime) * time.Microsecond)
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// GOMAXPROCS 指定操作系统线程数量
 func main() {
 	// nc localhost 8000
 	listener, err := net.Listen("tcp", "localhost:8000")
@@ -21,6 +22,8 @@ func main() {
 			continue
 		}
 		// goroutine是Go语言程序的并发体
+		// goroutine的调度方式不需要进入内核的上下文，所以重新调度一个goroutine比调度 一个线程代价要低得多。
+		// goroutine没有ID号
 		go handleConn(conn)
 	}
 }
