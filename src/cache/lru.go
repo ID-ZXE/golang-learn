@@ -4,12 +4,11 @@ import "container/list"
 
 // Cache is a LRU cache. It is not safe for concurrent access.
 type Cache struct {
-	maxBytes int64
-	nbytes   int64
-	ll       *list.List
-	cache    map[string]*list.Element
-	// optional and executed when an entry is purged.
-	OnEvicted func(key string, value Value)
+	maxBytes  int64
+	nbytes    int64
+	ll        *list.List
+	cache     map[string]*list.Element
+	OnEvicted func(key string, value Value) // optional and executed when an entry is purged.
 }
 
 type entry struct {
@@ -34,9 +33,9 @@ func New(maxBytes int64, onEvicted func(string, Value)) *Cache {
 
 // Get look ups a key's value
 func (cache *Cache) Get(key string) (value Value, ok bool) {
-	if ele, ok := cache.cache[key]; ok {
-		cache.ll.MoveToFront(ele)
-		kv := ele.Value.(*entry)
+	if element, ok := cache.cache[key]; ok {
+		cache.ll.MoveToFront(element)
+		kv := element.Value.(*entry)
 		return kv.value, true
 	}
 	return
