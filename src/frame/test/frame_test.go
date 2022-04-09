@@ -1,39 +1,40 @@
-package main
+package test
 
 import (
-	"gee"
+	"frame"
 	"log"
 	"net/http"
+	"testing"
 	"time"
 )
 
-func main() {
+func TestFrame(t *testing.T) {
 	run()
 }
 
 func run() {
-	engine := gee.Default()
+	engine := frame.Default()
 
-	engine.GET("/index", func(c *gee.Context) {
+	engine.GET("/index", func(c *frame.Context) {
 		c.HTML(http.StatusOK, "<h1>Index Page</h1>")
 	})
 
-	engine.GET("/panic", func(c *gee.Context) {
+	engine.GET("/panic", func(c *frame.Context) {
 		names := []string{"panic"}
 		c.String(http.StatusOK, names[100])
 	})
 
 	v1 := engine.Group("/v1")
 	{
-		v1.GET("/", func(c *gee.Context) {
-			c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
+		v1.GET("/", func(c *frame.Context) {
+			c.HTML(http.StatusOK, "<h1>Hello frame</h1>")
 		})
 
-		v1.GET("/hello/:name/doc", func(c *gee.Context) {
+		v1.GET("/hello/:name/doc", func(c *frame.Context) {
 			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
 		})
 
-		v1.GET("/api/*/doc", func(c *gee.Context) {
+		v1.GET("/api/*/doc", func(c *frame.Context) {
 			c.String(http.StatusOK, "url %s\n", c.Path)
 		})
 	}
@@ -41,11 +42,11 @@ func run() {
 	v2 := engine.Group("/v2")
 	v2.Use(onlyForV2())
 	{
-		v2.GET("/hello/:name/doc", func(c *gee.Context) {
+		v2.GET("/hello/:name/doc", func(c *frame.Context) {
 			c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
 		})
-		v2.POST("/login", func(c *gee.Context) {
-			c.JSON(http.StatusOK, gee.H{
+		v2.POST("/login", func(c *frame.Context) {
+			c.JSON(http.StatusOK, frame.H{
 				"username": c.PostForm("username"),
 				"password": c.PostForm("password"),
 			})
@@ -55,8 +56,8 @@ func run() {
 	engine.Run(":9999")
 }
 
-func onlyForV2() gee.HandlerFunc {
-	return func(context *gee.Context) {
+func onlyForV2() frame.HandlerFunc {
+	return func(context *frame.Context) {
 		// Start timer
 		t := time.Now()
 		// if a server error occurred

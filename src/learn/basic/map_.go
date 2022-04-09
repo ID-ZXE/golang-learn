@@ -43,6 +43,10 @@ func mockKvDB() {
 	personDB["12345"] = PersonInfo{"12345", "Tom", "Room 203,..."}
 	personDB["1"] = PersonInfo{"1", "Jack", "Room 101,..."}
 
+	// map有两种返回
+	tmp := personDB["1234"]
+	println(&tmp == nil)
+
 	// 从这个map查找键为"1234"的信息
 	person, ok := personDB["1234"]
 	if ok {
