@@ -26,15 +26,15 @@ func (session *Session) CreateTable() error {
 	table := session.RefTable()
 	var columns []string
 	for _, field := range table.Fields {
-		columns = append(columns, fmt.Sprintf("%session %session %session", field.Name, field.Type, field.Tag))
+		columns = append(columns, fmt.Sprintf("%s %s %s", field.Name, field.Type, field.Tag))
 	}
 	desc := strings.Join(columns, ",")
-	_, err := session.Raw(fmt.Sprintf("CREATE TABLE %session (%session);", table.Name, desc)).Exec()
+	_, err := session.Raw(fmt.Sprintf("CREATE TABLE %s (%s);", table.Name, desc)).Exec()
 	return err
 }
 
 func (session *Session) DropTable() error {
-	_, err := session.Raw(fmt.Sprintf("DROP TABLE IF EXISTS %session", session.RefTable().Name)).Exec()
+	_, err := session.Raw(fmt.Sprintf("DROP TABLE IF EXISTS %s", session.RefTable().Name)).Exec()
 	return err
 }
 

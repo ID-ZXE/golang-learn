@@ -26,7 +26,8 @@ func (s *mysql) DataTypeOf(typ reflect.Value) string {
 	case reflect.Float32, reflect.Float64:
 		return "float"
 	case reflect.String:
-		return "varchar"
+		// 映射默认长度
+		return "varchar(255)"
 	case reflect.Struct:
 		if _, ok := typ.Interface().(time.Time); ok {
 			return "datetime"

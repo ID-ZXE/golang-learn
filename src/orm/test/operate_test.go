@@ -113,6 +113,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	log.Println("test start")
 	TestDB, _ = sql.Open(driverName, url)
 	code := m.Run()
 	_ = TestDB.Close()
@@ -152,10 +153,17 @@ func TestQueryRows(t *testing.T) {
 
 func TestSessionCreateTable(t *testing.T) {
 	model := NewSession().Model(&User{})
-	_ = model.DropTable()
 	_ = model.CreateTable()
 	if !model.HasTable() {
 		t.Fatal("Failed to create table User")
+	}
+}
+
+func TestSessionDropTable(t *testing.T) {
+	model := NewSession().Model(&User{})
+	_ = model.DropTable()
+	if model.HasTable() {
+		t.Fatal("Failed to drop table User")
 	}
 }
 
